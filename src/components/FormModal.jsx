@@ -11,6 +11,7 @@ export const FormModal = ({
   title,
   buttonText,
   addNewStudent,
+  editStudent,
 }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,15 +20,16 @@ export const FormModal = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addNewStudent();
+    if (title === "Edit Student") editStudent();
+    else addNewStudent();
   };
 
   const handleClose = () => setShow(false);
 
   return (
     <Modal show={show} onHide={handleClose}>
-      <div className="bg-[#1f2937] p-4">
-        <div className="text-white mb-3">
+      <div className="bg-[#1f2937] p-10">
+        <div className="text-white mb-10">
           <h4 className="text-3xl">{title}</h4>
         </div>
 

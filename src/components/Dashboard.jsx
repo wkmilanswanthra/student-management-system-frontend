@@ -36,7 +36,10 @@ export const Dashboard = () => {
     try {
       const response = await axios.get(urls.students);
       console.log(response.data.data);
-      return response.data.data;
+      const sorted = response.data.data.sort(
+        (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+      );
+      return sorted;
     } catch (e) {
       console.log(e);
     }
@@ -60,6 +63,41 @@ export const Dashboard = () => {
       const students = await getStudents();
       setStudents(students);
       setShow(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const editStudent = async () => {
+    const birthdate = new Date(formData.dateOfBirth);
+
+    const newStudentData = {
+      id: formData.id,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      dateOfBirth: birthdate,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+    };
+
+    try {
+      const response = await axios.put(
+        urls.students + "?id=" + formData.id,
+        newStudentData
+      );
+      console.log(response.data);
+      refreshStudents();
+      setShow(false);
+      setFormData({
+        id: "",
+        firstName: "",
+        lastName: "",
+        dateOfBirth: "",
+        email: "",
+        phone: "",
+        address: "",
+      });
     } catch (error) {
       console.log(error);
     }
@@ -128,6 +166,10 @@ export const Dashboard = () => {
           setStudents={setStudents}
           show={show}
           setShow={setShow}
+          formData={formData}
+          setFormData={setFormData}
+          setTitle={setTitle}
+          setButtonText={setButtonText}
         />
       </div>
       <FormModal
@@ -138,6 +180,7 @@ export const Dashboard = () => {
         title={title}
         buttonText={buttonText}
         addNewStudent={addNewStudent}
+        editStudent={editStudent}
       />
     </div>
   );

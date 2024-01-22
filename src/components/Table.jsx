@@ -2,7 +2,14 @@ import React from "react";
 import axios from "axios";
 import urls from "../constants/Urls";
 
-export const Table = ({ students, setStudents, setShow, show }) => {
+export const Table = ({
+  students,
+  setStudents,
+  setShow,
+  setFormData,
+  setTitle,
+  setButtonText,
+}) => {
   return (
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
       <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -46,6 +53,19 @@ export const Table = ({ students, setStudents, setShow, show }) => {
 
           const handleEdit = () => {
             console.log(`Editing student with ID: ${student.id}`);
+            setTitle("Edit Student");
+            setButtonText("Update");
+            setFormData({
+              id: student.id,
+              firstName: student.firstName,
+              lastName: student.lastName,
+              dateOfBirth: new Date(student.dateOfBirth)
+                .toISOString()
+                .split("T")[0],
+              email: student.email,
+              phone: student.phone,
+              address: student.address,
+            });
             setShow(true);
           };
 
