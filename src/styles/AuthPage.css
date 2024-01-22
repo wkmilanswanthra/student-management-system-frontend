@@ -1,0 +1,16 @@
+.auth-box {
+  background-color: #1f2937;
+  width: 40%;
+}
+
+@media (max-width: 768px) {
+  .auth-box {
+    width: 50%;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-box {
+    width: 100%;
+  }
+}
