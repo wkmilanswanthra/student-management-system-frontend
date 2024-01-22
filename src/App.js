@@ -5,6 +5,7 @@ import { Signin } from "./components/Signin";
 import { Signup } from "./components/Signup";
 import { Routes, Route } from "react-router-dom";
 import { AuthContextProvider } from "./context/AuthContext";
+import { UserAuth } from "./context/AuthContext";
 
 const App = () => {
   return (
