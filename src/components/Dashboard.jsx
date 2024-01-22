@@ -63,6 +63,15 @@ export const Dashboard = () => {
       const students = await getStudents();
       setStudents(students);
       setShow(false);
+      setFormData({
+        id: "",
+        firstName: "",
+        lastName: "",
+        dateOfBirth: "",
+        email: "",
+        phone: "",
+        address: "",
+      });
     } catch (error) {
       console.log(error);
     }

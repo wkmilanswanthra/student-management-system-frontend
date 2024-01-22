@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { UserAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { isValidEmail } from "../utils/Validation";
 
 export const Signin = () => {
   const [email, setEmail] = useState("");
@@ -14,7 +15,10 @@ export const Signin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
+    if (!isValidEmail(email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
     try {
       await loginUser(email, password);
       navigate("/dashboard");

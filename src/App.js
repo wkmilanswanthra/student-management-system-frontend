@@ -6,6 +6,7 @@ import { Signup } from "./components/Signup";
 import { Routes, Route } from "react-router-dom";
 import { AuthContextProvider } from "./context/AuthContext";
 import { UserAuth } from "./context/AuthContext";
+import { ProtectedRoutes } from "./utils/ProtectedRoutes";
 
 const App = () => {
   return (
@@ -15,7 +16,14 @@ const App = () => {
           <Route path="/" element={<Signin />} />
           <Route path="signup" element={<Signup />} />
         </Route>
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoutes>
+              <Dashboard />
+            </ProtectedRoutes>
+          }
+        />
       </Routes>
     </AuthContextProvider>
   );

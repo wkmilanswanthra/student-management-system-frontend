@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
+import { isValidEmail, isValidPhone } from "../utils/Validation";
 
 export const FormModal = ({
   show,
@@ -20,11 +20,45 @@ export const FormModal = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.dateOfBirth ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.address
+    ) {
+      alert("Please fill in all the required fields.");
+      return;
+    }
+
+    if (!isValidEmail(formData.email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
+    if (!isValidPhone(formData.phone)) {
+      alert("Please enter a valid phone number.");
+      return;
+    }
+
     if (title === "Edit Student") editStudent();
     else addNewStudent();
   };
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setFormData({
+      id: "",
+      firstName: "",
+      lastName: "",
+      dateOfBirth: "",
+      email: "",
+      phone: "",
+      address: "",
+    });
+    setShow(false);
+  };
 
   return (
     <Modal show={show} onHide={handleClose}>
