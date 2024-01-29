@@ -21,6 +21,10 @@ export const Dashboard = () => {
   const [show, setShow] = useState(false);
   const [title, setTitle] = useState("");
   const [buttonText, setButtonText] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [keyword, setKeyword] = useState("");
 
   const navigate = useNavigate();
 
@@ -29,17 +33,59 @@ export const Dashboard = () => {
       const students = await getStudents();
       setStudents(students);
     };
-    fetchStudents();
-  }, []);
+    if (user != "") fetchStudents();
+  }, [user]);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      const students = await getStudents();
+      setStudents(students);
+    };
+    if (user !== "") {
+      if (keyword === "") fetchStudents();
+      else searchStudents();
+    }
+  }, [page, limit]);
 
   const getStudents = async () => {
     try {
-      const response = await axios.get(urls.students);
-      console.log(response.data.data);
-      const sorted = response.data.data.sort(
-        (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+      console.log("User : " + user);
+
+      const response = await axios.get(
+        urls.students + "?page=" + page + "&limit=" + limit,
+        {
+          headers: {
+            Authorization: `Bearer ${user}`,
+          },
+        }
       );
-      return sorted;
+      console.log(response.data.data);
+      setTotalPages(parseInt(response.data.meta.last_page));
+      return response.data.data;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const searchStudents = async () => {
+    try {
+      const response = await axios.get(
+        urls.students +
+          "?keyword=" +
+          keyword +
+          "&page=" +
+          page +
+          "&limit=" +
+          limit,
+        {
+          headers: {
+            Authorization: `Bearer ${user}`,
+          },
+        }
+      );
+      console.log(response.data.data);
+      setTotalPages(parseInt(response.data.meta.last_page));
+      setStudents(response.data.data);
     } catch (e) {
       console.log(e);
     }
@@ -58,7 +104,11 @@ export const Dashboard = () => {
     };
 
     try {
-      const response = await axios.post(urls.students, newStudentData);
+      const response = await axios.post(urls.students, newStudentData, {
+        headers: {
+          Authorization: `Bearer ${user}`,
+        },
+      });
       console.log(response.data);
       const students = await getStudents();
       setStudents(students);
@@ -91,9 +141,14 @@ export const Dashboard = () => {
     };
 
     try {
-      const response = await axios.put(
-        urls.students + "?id=" + formData.id,
-        newStudentData
+      const response = await axios.patch(
+        urls.students + "/" + formData.id,
+        newStudentData,
+        {
+          headers: {
+            Authorization: `Bearer ${user}`,
+          },
+        }
       );
       console.log(response.data);
       refreshStudents();
@@ -124,6 +179,13 @@ export const Dashboard = () => {
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const resetFilters = async () => {
+    setKeyword("");
+    setPage(1);
+    setLimit(10);
+    refreshStudents();
   };
 
   return (
@@ -179,6 +241,15 @@ export const Dashboard = () => {
           setFormData={setFormData}
           setTitle={setTitle}
           setButtonText={setButtonText}
+          page={page}
+          setPage={setPage}
+          limit={limit}
+          setLimit={setLimit}
+          totalPages={totalPages}
+          keyword={keyword}
+          setKeyword={setKeyword}
+          handleSearch={searchStudents}
+          resetFilters={resetFilters}
         />
       </div>
       <FormModal

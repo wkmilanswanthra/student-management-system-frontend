@@ -1,36 +1,77 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-} from "firebase/auth";
-import { auth } from "../firebase";
+import axios from "axios";
+import urls from "../constants/Urls";
 
 const UserContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState("");
 
-  const createUser = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  useEffect(() => {
+    getFromLocalStorage();
+  }, [user]);
+
+  const createUser = async (email, password) => {
+    try {
+      const response = await axios.post(urls.auth + "/register", {
+        email,
+        password,
+      });
+      console.log(response);
+      setUser(response.data.idToken.jwtToken);
+      saveToLocalStorage(response.data.idToken.jwtToken);
+      localStorage.setItem("email", email);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const loginUser = (email, password) => {
-    return signInWithEmailAndPassword(auth, email, password);
+  const loginUser = async (email, password) => {
+    try {
+      const response = await axios.post(urls.auth + "/login", {
+        email,
+        password,
+      });
+      console.log(response);
+      setUser(response.data.idToken.jwtToken);
+      saveToLocalStorage(response.data.idToken.jwtToken);
+      localStorage.setItem("email", email);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const logoutUser = () => {
-    return signOut(auth);
+    try {
+      // axios.post(
+      //   urls.auth + "/logout",
+      //   {
+      //     email: user,
+      //   },
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${user}`,
+      //     },
+      //   }
+      // );
+      setUser(null);
+      localStorage.removeItem("user");
+      localStorage.removeItem("email");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log(user);
-      setUser(user);
-    });
-    return () => unsubscribe();
-  }, []);
+  const saveToLocalStorage = (user) => {
+    localStorage.setItem("user", user);
+  };
+
+  const getFromLocalStorage = () => {
+    const userL = localStorage.getItem("user");
+    if (userL) {
+      setUser(userL);
+    }
+  };
 
   return (
     <UserContext.Provider value={{ createUser, logoutUser, loginUser, user }}>

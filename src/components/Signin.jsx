@@ -24,7 +24,7 @@ export const Signin = () => {
       navigate("/dashboard");
     } catch (e) {
       console.log(e);
-      setError(e.message);
+      window.alert(e.message);
     }
   };
   return (
