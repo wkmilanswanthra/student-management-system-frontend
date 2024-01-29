@@ -25,6 +25,8 @@ export const Dashboard = () => {
   const [limit, setLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [keyword, setKeyword] = useState("");
+  const [maxDOB, setMaxDOB] = useState("");
+  const [minDOB, setMinDOB] = useState("");
 
   const navigate = useNavigate();
 
@@ -77,6 +79,39 @@ export const Dashboard = () => {
           page +
           "&limit=" +
           limit,
+        {
+          headers: {
+            Authorization: `Bearer ${user}`,
+          },
+        }
+      );
+      console.log(response.data.data);
+      setTotalPages(parseInt(response.data.meta.last_page));
+      setStudents(response.data.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const filterStudents = async () => {
+    if (minDOB === "" || maxDOB === "") {
+      alert("Please select both the dates");
+      return;
+    }
+    const minDate = new Date(minDOB);
+    const maxDate = new Date(maxDOB);
+    if (minDate > maxDate) {
+      alert("Min date cannot be greater than max date");
+      return;
+    }
+    const data = {
+      min: minDate,
+      max: maxDate,
+    };
+    try {
+      const response = await axios.post(
+        urls.students + "/filter" + "?page=" + page + "&limit=" + limit,
+        data,
         {
           headers: {
             Authorization: `Bearer ${user}`,
@@ -183,6 +218,8 @@ export const Dashboard = () => {
 
   const resetFilters = async () => {
     setKeyword("");
+    setMaxDOB("");
+    setMinDOB("");
     setPage(1);
     setLimit(10);
     refreshStudents();
@@ -250,6 +287,11 @@ export const Dashboard = () => {
           setKeyword={setKeyword}
           handleSearch={searchStudents}
           resetFilters={resetFilters}
+          maxDOB={maxDOB}
+          setMaxDOB={setMaxDOB}
+          minDOB={minDOB}
+          setMinDOB={setMinDOB}
+          filterStudents={filterStudents}
         />
       </div>
       <FormModal

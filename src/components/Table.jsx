@@ -18,6 +18,11 @@ export const Table = ({
   setKeyword,
   handleSearch,
   resetFilters,
+  maxDOB,
+  setMaxDOB,
+  minDOB,
+  setMinDOB,
+  filterStudents,
 }) => {
   const [pageElements, setPageElements] = useState([]);
   console.log(totalPages);
@@ -53,7 +58,7 @@ export const Table = ({
         <div className="flex items-center">
           <label
             for="limit"
-            class="block  mr-2 text-xs font-medium text-gray-900 dark:text-white"
+            class="block my-auto   mr-2 text-xs font-medium text-gray-900 dark:text-white"
           >
             Number of rows
           </label>
@@ -115,23 +120,47 @@ export const Table = ({
         />
         <button
           type="button"
-          class="ml-5 text-white font-medium rounded-lg text-sm  p  text-center "
+          class="ml-5 text-white font-medium rounded-lg text-sm  text-center "
           onClick={handleSearch}
         >
           Search
         </button>
+
         <button
           type="button"
-          class="ml-5 text-white font-medium rounded-lg text-sm  p  text-center "
-        >
-          Filter
-        </button>
-        <button
-          type="button"
-          class="ml-5 text-red-600 font-medium rounded-lg text-sm  p  text-center "
+          class="ml-5 text-red-600 font-medium rounded-lg text-sm  text-center "
           onClick={resetFilters}
         >
           Reset
+        </button>
+      </div>
+      <div className="flex justify-start mb-4">
+        <label class="block my-auto  mr-2 text-xs font-medium text-gray-900 dark:text-white">
+          Min DOB
+        </label>
+        <input
+          type="date"
+          name="dateOfBirth"
+          value={minDOB}
+          onChange={(e) => setMinDOB(e.target.value)}
+          className="py-1 px-2.5 bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        />
+        <label class="block my-auto ml-5  mx-2 text-xs font-medium text-gray-900 dark:text-white">
+          Max DOB
+        </label>
+        <input
+          type="date"
+          name="dateOfBirth"
+          value={maxDOB}
+          onChange={(e) => setMaxDOB(e.target.value)}
+          className="py-1 px-2.5 bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        />
+        <button
+          type="button"
+          class="ml-5 text-white font-medium rounded-lg text-sm  p  text-center "
+          onClick={filterStudents}
+        >
+          Filter
         </button>
       </div>
       <table class="w-full text-sm text-left mb-4 rtl:text-right text-gray-500 dark:text-gray-400 ">
